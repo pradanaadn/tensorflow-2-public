@@ -26,19 +26,23 @@ async function train() {
   model = tf.sequential({
     layers: [
         
-      // YOUR CODE HERE
+      tf.layers.flatten({inputShape: mobilenet.outputs[0].shape.slice(1)}),
+      tf.layers.dense({ units: 100, activation: 'relu'}),
+      tf.layers.dense({ units: 64, activation: 'relu'}),
+      tf.layers.dense({ units: 32, activation: 'relu'}),
+      tf.layers.dense({ units: 5, activation: 'softmax'})
 
     ]
   });
     
    
   // Set the optimizer to be tf.train.adam() with a learning rate of 0.0001.
-  const optimizer = // YOUR CODE HERE
+  const optimizer = tf.train.adam(0.0001);
     
         
   // Compile the model using the categoricalCrossentropy loss, and
   // the optimizer you defined above.
-  model.compile(// YOUR CODE HERE);
+  model.compile({optimizer: optimizer, loss: 'categoricalCrossentropy'});
  
   let loss = 0;
   model.fit(dataset.xs, dataset.ys, {
@@ -46,7 +50,8 @@ async function train() {
     callbacks: {
       onBatchEnd: async (batch, logs) => {
         loss = logs.loss.toFixed(5);
-        console.log('LOSS: ' + loss);
+        acc = logs.acc.toFixed(5);
+        console.log('LOSS: ' + loss+', ACC: '+ acc);
         }
       }
    });
@@ -74,8 +79,12 @@ function handleButton(elem){
             
         // Add a case for lizard samples.
         // HINT: Look at the previous cases.
-            
-        // YOUR CODE HERE
+    case "4":
+			lizardSamples++;
+			document.getElementById("lizardsamples").innerText = "Lizard samples:" + lizardSamples;
+			break;    
+
+      
 		
             
 	}
@@ -112,8 +121,10 @@ async function predict() {
         // Add a case for lizard samples.
         // HINT: Look at the previous cases.
             
-        // YOUR CODE HERE 
-	
+    case 4:
+			predictionText = "I see Lizard";
+			break;
+        l
             
 	}
 	document.getElementById("prediction").innerText = predictionText;
